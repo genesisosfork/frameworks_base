@@ -2394,9 +2394,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                 }
             }
             // Don't override if a valid battery status update has come in
-            final BatteryStatus status = new BatteryStatus(BATTERY_STATUS_UNKNOWN,
-                    /* level= */ level, /* plugged= */ 0, CHARGING_POLICY_DEFAULT,
-                    /* maxChargingWattage= */0, /* present= */true);
+            final BatteryStatus status = new BatteryStatus(BATTERY_STATUS_UNKNOWN, /* level= */ 100, /* plugged= */
+                    0, CHARGING_POLICY_DEFAULT, /* maxChargingWattage= */0.0f, false, /* present= */true,
+                    0.0f, 0.0f, 0.0f);
+
             mMainExecutor.execute(() -> {
                 if (mBatteryStatus == null) {
                     handleBatteryUpdate(status);
@@ -3663,7 +3664,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
 
         // change in charging current while plugged in
-        if (nowPluggedIn && current.maxChargingWattage != old.maxChargingWattage) {
+        if (nowPluggedIn &&
+              (current.maxChargingWattage != old.maxChargingWattage ||
+               current.maxChargingCurrent != old.maxChargingCurrent ||
+               current.maxChargingVoltage != old.maxChargingVoltage)) {
             return true;
         }
 
@@ -3674,6 +3678,11 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
         // change in the incompatible charger
         if (!old.incompatibleCharger.equals(current.incompatibleCharger)) {
+            return true;
+        }
+
+        // change in battery temperature
+        if (old.temperature != current.temperature) {
             return true;
         }
 
