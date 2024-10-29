@@ -92,6 +92,7 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
     private boolean mMouseHoveringAtRight;
     private boolean mMouseHoveringAtBottom;
     private long mLastFlingTime;
+    private boolean mScrollFired;
 
     SystemGesturesPointerEventListener(Context context, Handler handler, Callbacks callbacks) {
         mContext = checkNull("context", context);
@@ -186,6 +187,7 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
                 mSwipeFireable = true;
                 mDebugFireable = true;
                 mScrollFireable = true;
+                mScrollFired = false;
                 mDownPointers = 0;
                 captureDown(event, 0);
                 if (mMouseHoveringAtLeft) {
@@ -293,6 +295,7 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
                 mSwipeFireable = false;
                 mDebugFireable = false;
                 mScrollFireable = false;
+                mScrollFired = false;
                 mCallbacks.onUpOrCancel();
                 break;
             default:
@@ -468,6 +471,20 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
             mCallbacks.onFling(duration + 160);
             return true;
         }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                   float distanceX, float distanceY) {
+           if (!mScrollFired) {
+                int duration = mOverscroller.getDuration();
+                if (duration > MAX_FLING_TIME_MILLIS) {
+                    duration = MAX_FLING_TIME_MILLIS;
+                }
+               mCallbacks.onScroll(duration);
+               mScrollFired = true;
+           }
+           return true;
+        }
     }
 
     interface Callbacks {
@@ -476,6 +493,7 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
         void onSwipeFromRight();
         void onSwipeFromLeft();
         void onFling(int durationMs);
+        void onScroll(int durationMs);
         void onDown();
         void onUpOrCancel();
         void onMouseHoverAtLeft();
