@@ -8480,6 +8480,15 @@ public class RemoteViews implements Parcelable, Filter {
             }
             try {
                 LoadedApk.checkAndUpdateApkPaths(mApplication);
+                ApplicationInfo sanitizedApplication = mApplication;
+                try {
+                    // Use PackageManager as the source of truth for application information, rather
+                    // than the parceled ApplicationInfo provided by the app.
+                    sanitizedApplication = context.getPackageManager().getApplicationInfoAsUser(
+                        mApplication.packageName, 0, UserHandle.getUserId(mApplication.uid));
+                } catch(SecurityException se) {
+                    Log.d(LOG_TAG, "Unable to fetch appInfo for " + mApplication.packageName);
+                }
                 Context applicationContext = context.createApplicationContext(mApplication,
                         Context.CONTEXT_RESTRICTED);
                 // Get the correct apk paths while maintaining the current context's configuration.
