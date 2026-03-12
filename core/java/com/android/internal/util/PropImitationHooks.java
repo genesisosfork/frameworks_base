@@ -193,7 +193,7 @@ public class PropImitationHooks {
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
         sIsFinsky = packageName.equals(PACKAGE_FINSKY);
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
-        sIsPixelLauncher = packageName.equals(PACKAGE_NEXUSLAUNCHER);
+        sIsPixelLauncher = packageName.equals(PACKAGE_LAUNCHER);
         sIsASI = packageName.equals(PACKAGE_ASI);
 
         /* Set certified properties for GMSCore

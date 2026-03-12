@@ -471,20 +471,6 @@ class SystemGesturesPointerEventListener implements PointerEventListener {
             mCallbacks.onFling(duration + 160);
             return true;
         }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                   float distanceX, float distanceY) {
-           if (!mScrollFired) {
-                int duration = mOverscroller.getDuration();
-                if (duration > MAX_FLING_TIME_MILLIS) {
-                    duration = MAX_FLING_TIME_MILLIS;
-                }
-               mCallbacks.onScroll(duration);
-               mScrollFired = true;
-           }
-           return true;
-        }
     }
 
     interface Callbacks {

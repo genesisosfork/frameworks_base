@@ -2711,6 +2711,8 @@ public final class SystemServer implements Dumpable {
 
             t.traceBegin("AppLockManagerService");
             mSystemServiceManager.startService(AppLockManagerService.Lifecycle.class);
+            t.traceEnd();
+
             t.traceBegin("FreeformService");
             mSystemServiceManager.startService(FreeformService.class);
             t.traceEnd();
